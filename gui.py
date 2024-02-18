@@ -7,6 +7,8 @@ import os
 import shutil
 import time
 
+this_version: str = "1.1"
+
 filepath_v: str = ""
 filepath_p: str = ""
 
@@ -14,6 +16,8 @@ isAlreadyFrameExtracted: bool = False
 
 width_v: int = 100
 width_p: int = 200
+
+art_altitude: int = 4
 
 
 def main(page: ft.Page):
@@ -108,7 +112,7 @@ def main(page: ft.Page):
             return
         ft_status_of_set_from_video.value = "設置中..."
         ft_status_of_set_from_video.update()
-        status: int = cvt.set_from_video(width_v)
+        status: int = cvt.set_from_video(width_v, art_altitude)
         if status == 0:
             ft_status_of_set_from_video.value = "設置に成功しました"
             # shutil.rmtree("tempv")
@@ -126,7 +130,7 @@ def main(page: ft.Page):
             return
         ft_status_of_set_from_picture.value = "設置中..."
         ft_status_of_set_from_picture.update()
-        status: int = cvt.set_from_picture(width_p)
+        status: int = cvt.set_from_picture(width_p, art_altitude)
         if status == 0:
             ft_status_of_set_from_picture.value = "設置に成功しました"
             # shutil.rmtree("tempp")
@@ -148,25 +152,45 @@ def main(page: ft.Page):
         except ValueError:
             return
 
+    def change_art_altitude(e):
+        global art_altitude
+        try:
+            art_altitude = int(e.control.value)
+        except ValueError:
+            return
+
     # これのまとめ方がわからない
 
     ft_status_of_set_from_video = ft.Text()
     ft_status_of_set_from_picture = ft.Text()
 
     width_input_v = ft.TextField(
-        label="横幅", on_change=change_width_v, value=str(width_v)
+        label="数値", on_change=change_width_v, value=str(width_v)
     )
     width_input_p = ft.TextField(
-        label="横幅", on_change=change_width_p, value=str(width_p)
+        label="数値", on_change=change_width_p, value=str(width_p)
     )
     page.title = "Minecraft 画像/動画配置ツール"
 
     wrapper = ft.Column(
         [
-            ft.Text("Minecraft 画像/動画配置ツール ver. 1.0", size=40),
+            ft.Text(f"Minecraft 画像/動画配置ツール ver. {this_version}", size=35),
             ft.Text(
                 "先にMinecraftを起動してください。\nまた、動画を録画する際はReplay Mod等の使用を推奨します。",
                 size=16,
+            ),
+            ft.Container(
+                ft.Row(
+                    [
+                        ft.Text("設置高度:"),
+                        ft.TextField(
+                            label="数値",
+                            on_change=change_art_altitude,
+                            value=str(art_altitude),
+                        ),
+                    ]
+                ),
+                padding=12,
             ),
             ft.Row(
                 [
@@ -176,7 +200,7 @@ def main(page: ft.Page):
                                 [
                                     ft.Column(
                                         [
-                                            ft.Text("画像を設置する", size=30),
+                                            ft.Text("画像を設置する", size=25),
                                             ft.Container(
                                                 ft.Column(
                                                     [
@@ -206,7 +230,7 @@ def main(page: ft.Page):
                                                 ),
                                                 # blend_mode=ft.BlendMode.SRC,
                                                 # margin=15,
-                                                padding=15,
+                                                padding=5,
                                                 # border_radius=15,
                                             ),
                                             ft.Container(
@@ -224,7 +248,7 @@ def main(page: ft.Page):
                                                 ),
                                                 # blend_mode=ft.BlendMode.SRC,
                                                 # margin=15,
-                                                padding=20,
+                                                padding=12,
                                                 # border_radius=15,
                                             ),
                                             ft.Container(
@@ -244,7 +268,7 @@ def main(page: ft.Page):
                                                 ),
                                                 # blend_mode=ft.BlendMode.SRC,
                                                 # margin=15,
-                                                padding=15,
+                                                padding=5,
                                                 # border_radius=15,
                                             ),
                                         ],
@@ -255,7 +279,7 @@ def main(page: ft.Page):
                             ),
                         ],
                         width=page.width // 2,
-                        height=page.height - 300,
+                        height=page.height - 375,
                         expand=False,
                     ),
                     ft.Stack(
@@ -264,7 +288,7 @@ def main(page: ft.Page):
                                 [
                                     ft.Column(
                                         [
-                                            ft.Text("動画を設置する", size=30),
+                                            ft.Text("動画を設置する", size=25),
                                             ft.Container(
                                                 ft.Column(
                                                     [
@@ -295,7 +319,7 @@ def main(page: ft.Page):
                                                 ),
                                                 # blend_mode=ft.BlendMode.SRC,
                                                 # margin=15,
-                                                padding=15,
+                                                padding=5,
                                                 # border_radius=15,
                                             ),
                                             ft.Container(
@@ -315,7 +339,7 @@ def main(page: ft.Page):
                                                 ),
                                                 # blend_mode=ft.BlendMode.SRC,
                                                 # margin=15,
-                                                padding=15,
+                                                padding=5,
                                                 # border_radius=15,
                                             ),
                                             ft.Container(
@@ -333,7 +357,7 @@ def main(page: ft.Page):
                                                 ),
                                                 # blend_mode=ft.BlendMode.SRC,
                                                 # margin=15,
-                                                padding=20,
+                                                padding=12,
                                                 # border_radius=15,
                                             ),
                                             ft.Container(
@@ -353,7 +377,7 @@ def main(page: ft.Page):
                                                 ),
                                                 # blend_mode=ft.BlendMode.SRC,
                                                 # margin=15,
-                                                padding=15,
+                                                padding=5,
                                                 # border_radius=15,
                                             ),
                                         ],
@@ -364,7 +388,7 @@ def main(page: ft.Page):
                             ),
                         ],
                         width=page.width // 2,
-                        height=page.height - 300,
+                        height=page.height - 375,
                         expand=False,
                     ),
                 ]
