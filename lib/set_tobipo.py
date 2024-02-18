@@ -1,8 +1,12 @@
 from mcpi import minecraft
 import mcpi.block as block
 
-# 跳びポマシン設置
+# 跳びポマシン設置1号
 # 必ず絵の上で起動
+
+# 設置高度: 4
+# 推奨画像幅: 200程度
+
 
 def main():
     mc = minecraft.Minecraft.create("localhost")
