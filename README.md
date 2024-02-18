@@ -2,7 +2,7 @@
 
 An easy python tool for creating pixel art and movie in minecraft.
 
-demo: TBA...
+demo: [こんな感じ](https://youtube.com/shorts/egHpxak3Rm0?feature=share)
 
 ## 必要環境
 Minecraft: ver.1.12.2
