@@ -21,7 +21,9 @@ import mcpi.block as block
 # は溶ける
 
 
-def execute(mc, player_pos_new, filename, color_json, palette_rgb, width, height, y):
+def execute(
+    mc, player_pos_new, filename, color_json, palette_rgb, width, height, art_altitude
+):
     # 画像を読みこむ。
     img_rgb = io.imread(filename)
 
@@ -72,11 +74,17 @@ def execute(mc, player_pos_new, filename, color_json, palette_rgb, width, height
             else:
                 id = int(id)
                 kind = 0
-            mc.setBlock(player_pos_new[0] + x, y, player_pos_new[2] + j, id, kind)
+            mc.setBlock(
+                player_pos_new[0] + x, art_altitude, player_pos_new[2] + j, id, kind
+            )
+            if art_altitude > 4:
+                mc.setBlock(
+                    player_pos_new[0] + x, art_altitude - 1, player_pos_new[2] + j, 2
+                )
     return
 
 
-def set_from_video(width: int) -> int:
+def set_from_video(width: int, art_altitude: int) -> int:
     mc = minecraft.Minecraft.create("localhost")
 
     with open("./database/color_v2.json", "r") as f:
@@ -93,7 +101,7 @@ def set_from_video(width: int) -> int:
     )
 
     output_folder = "tempv/frames/"
-    y = 4
+
     player_pos = mc.player.getPos()
 
     player_pos_x = math.floor(player_pos.x)
@@ -106,22 +114,26 @@ def set_from_video(width: int) -> int:
     img_rgb = io.imread(first_frame)
     height = int(width * img_rgb.shape[0] / img_rgb.shape[1])
 
-    h = math.tan(math.radians(55)) * max(width, height) / 2
-    mc.player.setPos(
-        player_pos_new[0] + height // 2, h, player_pos_new[2] + width // 2
-    )
+    h = math.tan(math.radians(55)) * max(width, height) / 2 + art_altitude
+    mc.player.setPos(player_pos_new[0] + height // 2, h, player_pos_new[2] + width // 2)
 
     with tqdm(total=len(frame_files), desc="executing") as pbar:
         for i, filename in enumerate(frame_files):
             execute(
-                mc, player_pos_new, filename, color_json, palette_rgb, width, height, y
+                mc,
+                player_pos_new,
+                filename,
+                color_json,
+                palette_rgb,
+                width,
+                height,
+                art_altitude,
             )
             pbar.update(1)
-            # y += 1
     return 0
 
 
-def set_from_picture(width: int) -> int:
+def set_from_picture(width: int, art_altitude: int) -> int:
     mc = minecraft.Minecraft.create("localhost")
     with open("./database/color_v2.json", "r") as f:
         color_json = json.load(f)
@@ -149,7 +161,7 @@ def set_from_picture(width: int) -> int:
     # 画像の縦横比を維持して、heightを計算する
     img_rgb = io.imread(filename)
     height = int(width * img_rgb.shape[0] / img_rgb.shape[1])
-    y = 4
+
     player_pos = mc.player.getPos()
 
     player_pos_x = math.floor(player_pos.x)
@@ -157,10 +169,17 @@ def set_from_picture(width: int) -> int:
     player_pos_z = math.floor(player_pos.z)
     player_pos_new = [player_pos_x, player_pos_y, player_pos_z]
 
-    h = math.tan(math.radians(55)) * max(width, height) / 2
-    mc.player.setPos(
-        player_pos_new[0] + height // 2, h, player_pos_new[2] + width // 2
-    )
+    h = math.tan(math.radians(55)) * max(width, height) / 2 + art_altitude
+    mc.player.setPos(player_pos_new[0] + height // 2, h, player_pos_new[2] + width // 2)
 
-    execute(mc, player_pos_new, filename, color_json, palette_rgb, width, height, y)
+    execute(
+        mc,
+        player_pos_new,
+        filename,
+        color_json,
+        palette_rgb,
+        width,
+        height,
+        art_altitude,
+    )
     return 0
